@@ -14,3 +14,22 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+
+**Untuk Menjalankan Flutter**
+
+`flutter run`
+
+**Home Page**
+![alt text](/assets/HomePage.png)
+
+**Input Page**
+![alt text](/assets/InputData.png)
+
+**Lihat Page**
+![alt text](/assets/LihatData.png)
+
+**Edit Page**
+![alt text](/assets/Edit.png)
+
+**Delete Page**
+![alt text](/assets/Delete.png)
