@@ -19,11 +19,17 @@ samples, guidance on mobile development, and a full API reference.
 
 `flutter run`
 
+**Splash Screen Page**
+![alt text](assets/images/SplashScreen.png)
+
 **Home Page**
 ![alt text](assets/images/HomePage.png)
 
 **Input Page**
 ![alt text](assets/images/InputData.png)
+
+**Alert Berhasil Dikirim**
+![alt text](assets/images/BerhasilDikirim.png)
 
 **Lihat Page**
 ![alt text](assets/images/LihatData.png)

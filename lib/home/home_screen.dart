@@ -177,17 +177,33 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   Row(
                     children: [
-                      SvgPicture.asset(
-                        'assets/svgs/orangduduk.svg',
-                        width: 35,
-                        height: 35,
-                        color: Colors.white,
-                        colorBlendMode: BlendMode.srcIn,
+                      ShaderMask(
+                        shaderCallback: (Rect bounds) {
+                          return const LinearGradient(
+                            colors: [
+                              Color.fromARGB(
+                                  255, 144, 2, 200), // Warna atas (0%)
+                              Color.fromARGB(
+                                  255, 72, 31, 147), // Warna bawah (100%)
+                            ],
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            stops: [0.0, 1.0],
+                          ).createShader(bounds);
+                        },
+                        child: SvgPicture.asset(
+                          'assets/svgs/orangduduk.svg',
+                          width: 35,
+                          height: 35,
+                          color: Colors.white,
+                          colorBlendMode: BlendMode.srcIn,
+                        ),
                       ),
                       const SizedBox(width: 8),
                       Text(
                         "DBS Application",
                         style: GoogleFonts.poppins(
+                          // Pastikan GoogleFonts diimpor jika digunakan
                           color: Colors.white,
                           fontSize: 12,
                           fontWeight: FontWeight.w500,
@@ -215,10 +231,27 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-            SvgPicture.asset(
-              'assets/svgs/orangduduk.svg',
-              height: 100,
-              width: 60,
+            ShaderMask(
+              shaderCallback: (Rect bounds) {
+                return const LinearGradient(
+                  colors: [
+                    Color.fromARGB(255, 144, 2, 200), // Warna atas (0%)
+                    Color.fromARGB(255, 72, 31, 147), // Warna bawah (100%)
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  stops: [0.0, 1.0],
+                ).createShader(bounds);
+              },
+              child: SvgPicture.asset(
+                'assets/svgs/orangduduk.svg',
+                height: 100,
+                width: 60,
+                // PENTING: Menggunakan color dan colorBlendMode agar ShaderMask efektif
+                color: Colors.white, // SVG dijadikan putih (atau warna dasar)
+                colorBlendMode:
+                    BlendMode.srcIn, // Mode ini penting untuk ShaderMask
+              ),
             ),
           ],
         ),
