@@ -33,3 +33,6 @@ samples, guidance on mobile development, and a full API reference.
 
 **Delete Page**
 ![alt text](assets/images/Delete.png)
+
+**Database**
+![alt text](assets/images/Database.png)
