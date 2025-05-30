@@ -20,16 +20,16 @@ samples, guidance on mobile development, and a full API reference.
 `flutter run`
 
 **Home Page**
-![alt text](/assets/HomePage.png)
+![alt text](assets/images/HomePage.png)
 
 **Input Page**
-![alt text](/assets/InputData.png)
+![alt text](assets/images/InputData.png)
 
 **Lihat Page**
-![alt text](/assets/LihatData.png)
+![alt text](assets/images/LihatData.png)
 
 **Edit Page**
-![alt text](/assets/Edit.png)
+'![alt text](assets/images/Edit.png)'
 
 **Delete Page**
-![alt text](/assets/Delete.png)
+![alt text](assets/images/Delete.png)
