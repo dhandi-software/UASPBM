@@ -4,8 +4,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uts_pbm/global.dart';
-import 'package:uts_pbm/home/home_screen.dart'; // Pastikan path ini benar
-import 'package:uts_pbm/LihatData/lihat_data_screen.dart'; // Pastikan path ini benar
+import 'package:uts_pbm/home/home_screen.dart';
+import 'package:uts_pbm/LihatData/lihat_data_screen.dart';
 
 class InputDataScreen extends StatefulWidget {
   const InputDataScreen({super.key});
@@ -20,7 +20,78 @@ class _InputDataScreenState extends State<InputDataScreen> {
   final TextEditingController _npmController = TextEditingController();
   final TextEditingController _pesanController = TextEditingController();
   bool _isLoading = false;
-  int _selectedIndex = 1;
+  final int _selectedIndex = 1;
+
+  Widget _buildAppDrawer(BuildContext context) {
+    return Drawer(
+      backgroundColor: Colors.white, // Latar belakang drawer putih
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          DrawerHeader(
+            decoration: const BoxDecoration(
+              gradient: ungugradient,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SvgPicture.asset(
+                  'assets/svgs/orangduduk.svg',
+                  height: 60,
+                  width: 60,
+                  // PERBAIKAN: Ganti 'colorFilter' kembali ke 'color' dan 'colorBlendMode'
+                  color: Colors.white,
+                  colorBlendMode: BlendMode.srcIn,
+                ),
+                const SizedBox(height: 12),
+                const Text(
+                  'DBS Application',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          ListTile(
+            // Menggunakan warna `text` dari global agar konsisten
+            leading: Icon(Icons.home_rounded, color: text),
+            title: const Text('Home'),
+            onTap: () {
+              Navigator.pop(context);
+              _onBottomNavItemTapped(0);
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.input_rounded, color: text),
+            title: const Text('Input Data'),
+            onTap: () {
+              Navigator.pop(context);
+              // Cukup pushReplacement agar tidak menumpuk halaman
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const InputDataScreen()),
+              );
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.list_alt_rounded, color: text),
+            title: const Text('Lihat Data'),
+            onTap: () {
+              Navigator.pop(context);
+              // Jika sudah di halaman lihat data, cukup tutup drawer
+              // Jika ingin refresh, bisa panggil _fetchData()
+              // _onBottomNavItemTapped(2);
+            },
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _buildInfoCard() {
     return Container(
@@ -53,10 +124,8 @@ class _InputDataScreenState extends State<InputDataScreen> {
                         shaderCallback: (Rect bounds) {
                           return const LinearGradient(
                             colors: [
-                              Color.fromARGB(
-                                  255, 144, 2, 200), // Warna atas (0%)
-                              Color.fromARGB(
-                                  255, 72, 31, 147), // Warna bawah (100%)
+                              Color.fromARGB(255, 144, 2, 200),
+                              Color.fromARGB(255, 72, 31, 147),
                             ],
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
@@ -75,7 +144,6 @@ class _InputDataScreenState extends State<InputDataScreen> {
                       Text(
                         "DBS Application",
                         style: GoogleFonts.poppins(
-                          // Pastikan GoogleFonts diimpor jika digunakan
                           color: Colors.white,
                           fontSize: 12,
                           fontWeight: FontWeight.w500,
@@ -186,11 +254,7 @@ class _InputDataScreenState extends State<InputDataScreen> {
   }
 
   void _onBottomNavItemTapped(int index) {
-    if (_selectedIndex == index && index == 1) return;
-
-    setState(() {
-      _selectedIndex = index;
-    });
+    if (_selectedIndex == index) return;
 
     switch (index) {
       case 0:
@@ -201,6 +265,7 @@ class _InputDataScreenState extends State<InputDataScreen> {
         );
         break;
       case 1:
+        // Sudah di halaman ini, tidak perlu navigasi
         break;
       case 2:
         Navigator.pushReplacement(
@@ -239,6 +304,14 @@ class _InputDataScreenState extends State<InputDataScreen> {
 
     return Scaffold(
       backgroundColor: background,
+      // AppBar ditambahkan untuk menampilkan judul dan ikon Drawer
+      appBar: AppBar(
+        title: const Text('Input Data'),
+        backgroundColor: const Color(0xFF6750A4),
+        foregroundColor: Colors.white,
+      ),
+      // Menambahkan Drawer ke Scaffold
+      drawer: _buildAppDrawer(context),
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
           _customBottomBarItem(

@@ -20,6 +20,7 @@ samples, guidance on mobile development, and a full API reference.
 `flutter run`
 
 **Splash Screen Page**
+
 ![alt text](assets/images/SplashScreen.png)
 
 **Home Page**

@@ -55,6 +55,77 @@ class _LihatDataScreenState extends State<LihatDataScreen> {
     }
   }
 
+  Widget _buildAppDrawer(BuildContext context) {
+    return Drawer(
+      backgroundColor: Colors.white, // Latar belakang drawer putih
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          DrawerHeader(
+            decoration: const BoxDecoration(
+              gradient: ungugradient,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SvgPicture.asset(
+                  'assets/svgs/orangduduk.svg',
+                  height: 60,
+                  width: 60,
+                  // PERBAIKAN: Ganti 'colorFilter' kembali ke 'color' dan 'colorBlendMode'
+                  color: Colors.white,
+                  colorBlendMode: BlendMode.srcIn,
+                ),
+                const SizedBox(height: 12),
+                const Text(
+                  'DBS Application',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          ListTile(
+            // Menggunakan warna `text` dari global agar konsisten
+            leading: Icon(Icons.home_rounded, color: text),
+            title: const Text('Home'),
+            onTap: () {
+              Navigator.pop(context);
+              _onBottomNavItemTapped(0);
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.input_rounded, color: text),
+            title: const Text('Input Data'),
+            onTap: () {
+              Navigator.pop(context);
+              // Cukup pushReplacement agar tidak menumpuk halaman
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const InputDataScreen()),
+              );
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.list_alt_rounded, color: text),
+            title: const Text('Lihat Data'),
+            onTap: () {
+              Navigator.pop(context);
+              // Jika sudah di halaman lihat data, cukup tutup drawer
+              // Jika ingin refresh, bisa panggil _fetchData()
+              // _onBottomNavItemTapped(2);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
   Future<void> _deleteRecord(dynamic recordId) async {
     bool confirmDelete = await showDialog(
           context: context,
@@ -718,15 +789,23 @@ class _LihatDataScreenState extends State<LihatDataScreen> {
     }
   }
 
-// ... Sisa kode _LihatDataScreenState dan widget build() utama tetap sama ...
-// Pastikan Anda menyalin seluruh kelas _LihatDataScreenState jika mengganti.
-// Di sini saya hanya menampilkan fungsi _buildDataDisplayArea yang diubah.
-
-// Untuk kelengkapan, ini adalah seluruh widget build jika Anda ingin menggantinya:
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: background,
+      appBar: AppBar(
+        title: Text(
+          "Lihat Data",
+          // Warna tidak perlu diatur lagi di sini, sudah diatur oleh foregroundColor
+          style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 20),
+        ),
+        backgroundColor: const Color(0xFF6750A4),
+        // Properti ini sekarang akan mengatur warna untuk judul DAN ikon menu
+        foregroundColor: Colors.white,
+        elevation: 0,
+        // iconTheme: IconThemeData(color: text), // <-- BARIS INI SUDAH DIHAPUS SESUAI INSTRUKSI
+      ),
+      drawer: _buildAppDrawer(context),
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
           _customBottomBarItem(
@@ -750,20 +829,11 @@ class _LihatDataScreenState extends State<LihatDataScreen> {
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 10),
-                Text(
-                  "Halaman Lihat Data",
-                  style: GoogleFonts.poppins(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: text,
-                  ),
-                ),
-                const SizedBox(height: 20),
                 _buildInfoCard(),
                 const SizedBox(height: 30),
                 _buildDataDisplayArea(),

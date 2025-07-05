@@ -3,7 +3,6 @@ import 'package:uts_pbm/global.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-// Import halaman tujuan
 import 'package:uts_pbm/input/input_data_screen.dart';
 import 'package:uts_pbm/LihatData/lihat_data_screen.dart';
 
@@ -18,120 +17,71 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
   void _onItemTapped(int index) {
-    // Navigasi BottomNavBar tetap sama, namun kita akan reset state saat kembali
-    if (_selectedIndex == index) return;
-
-    // Navigasi ke halaman lain
-    if (index == 1) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const InputDataScreen()),
-      ).then((_) =>
-          setState(() => _selectedIndex = 0)); // Reset ke Home saat kembali
-    } else if (index == 2) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const LihatDataScreen()),
-      ).then((_) =>
-          setState(() => _selectedIndex = 0)); // Reset ke Home saat kembali
+    if (_selectedIndex == index && index == 0) {
+      if (!Navigator.canPop(context)) {
+        // Hanya return jika sudah di Home dan tidak ada yg bisa di-pop
+        return;
+      }
     }
-  }
 
-  // Widget untuk membangun Drawer (menu samping)
-  Widget _buildAppDrawer(BuildContext context) {
-    return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          // Header untuk Drawer dengan logo dan nama
-          DrawerHeader(
-            decoration: const BoxDecoration(
-              gradient: ungugradient, // Menggunakan gradient dari global.dart
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // Logo Anda di dalam Drawer
-                SvgPicture.asset(
-                  'assets/svgs/orangduduk.svg',
-                  height: 60,
-                  width: 60,
-                  color: Colors.white,
-                  colorBlendMode: BlendMode.srcIn,
-                ),
-                const SizedBox(height: 12),
-                const Text(
-                  'DBS Application',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          // Item menu untuk ke Halaman Input Data
-          ListTile(
-            leading: const Icon(Icons.home_rounded),
-            title: const Text('Home'),
-            onTap: () {
-              Navigator.pop(context); // Tutup drawer
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const HomeScreen()),
-              ).then((_) => setState(() => _selectedIndex = 0));
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.input_rounded),
-            title: const Text('Input Data'),
-            onTap: () {
-              Navigator.pop(context); // Tutup drawer
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const InputDataScreen()),
-              ).then((_) => setState(() => _selectedIndex = 0));
-            },
-          ),
-          // Item menu untuk ke Halaman Lihat Data
-          ListTile(
-            leading: const Icon(Icons.list_alt_rounded),
-            title: const Text('Lihat Data'),
-            onTap: () {
-              Navigator.pop(context); // Tutup drawer
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const LihatDataScreen()),
-              ).then((_) => setState(() => _selectedIndex = 0));
-            },
-          ),
-        ],
-      ),
-    );
+    if (index == 0) {
+      if (Navigator.canPop(context)) {
+        Navigator.popUntil(context, (route) => route.isFirst);
+      }
+      if (_selectedIndex != 0) {
+        setState(() {
+          _selectedIndex = 0;
+        });
+      }
+    } else if (index == 1) {
+      if (_selectedIndex != index ||
+          !ModalRoute.of(context)!.settings.name!.endsWith('InputDataScreen')) {
+        setState(() {
+          _selectedIndex = index;
+        });
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => const InputDataScreen(),
+              settings: const RouteSettings(name: 'InputDataScreen')),
+        ).then((_) {
+          if (mounted) {
+            setState(() {
+              _selectedIndex = 0;
+            });
+          }
+        });
+      }
+    } else if (index == 2) {
+      if (_selectedIndex != index ||
+          !ModalRoute.of(context)!.settings.name!.endsWith('LihatDataScreen')) {
+        setState(() {
+          _selectedIndex = index;
+        });
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => const LihatDataScreen(),
+              settings: const RouteSettings(name: 'LihatDataScreen')),
+        ).then((_) {
+          if (mounted) {
+            setState(() {
+              _selectedIndex = 0;
+            });
+          }
+        });
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: background,
-      // AppBar baru untuk menampilkan judul dan ikon Drawer
-      appBar: AppBar(
-        title: const Text('DBS Application'),
-        backgroundColor: const Color(0xFF6750A4), // Warna konsisten dengan tema
-        foregroundColor: Colors.white,
-        elevation: 2,
-      ),
-      // Menambahkan Drawer ke Scaffold
-      drawer: _buildAppDrawer(context),
       bottomNavigationBar: _bottomNavigationBar(),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(
-              horizontal: 24, vertical: 32), // Padding disesuaikan
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -152,7 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   color: text,
                 ),
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 40),
               _buildInfoCard(),
               const SizedBox(height: 30),
               _buildStyledButton(
@@ -163,10 +113,16 @@ class _HomeScreenState extends State<HomeScreen> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => const InputDataScreen()),
-                  ).then((_) => setState(() => _selectedIndex = 0));
+                  ).then((_) {
+                    if (mounted) {
+                      setState(() {
+                        _selectedIndex = 0;
+                      });
+                    }
+                  });
                 },
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 48),
               _buildStyledButton(
                 buttonText: "Halaman Lihat Data",
                 isPrimary: false,
@@ -175,10 +131,18 @@ class _HomeScreenState extends State<HomeScreen> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => const LihatDataScreen()),
-                  ).then((_) => setState(() => _selectedIndex = 0));
+                  ).then((_) {
+                    if (mounted) {
+                      setState(() {
+                        _selectedIndex = 0;
+                      });
+                    }
+                  });
                 },
               ),
-              const SizedBox(height: 20),
+              const SizedBox(
+                height: 10,
+              ),
             ],
           ),
         ),
@@ -213,18 +177,33 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   Row(
                     children: [
-                      // Logo Anda di dalam kartu
-                      SvgPicture.asset(
-                        'assets/svgs/orangduduk.svg',
-                        width: 35,
-                        height: 35,
-                        color: Colors.white,
-                        colorBlendMode: BlendMode.srcIn,
+                      ShaderMask(
+                        shaderCallback: (Rect bounds) {
+                          return const LinearGradient(
+                            colors: [
+                              Color.fromARGB(
+                                  255, 144, 2, 200), // Warna atas (0%)
+                              Color.fromARGB(
+                                  255, 72, 31, 147), // Warna bawah (100%)
+                            ],
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            stops: [0.0, 1.0],
+                          ).createShader(bounds);
+                        },
+                        child: SvgPicture.asset(
+                          'assets/svgs/orangduduk.svg',
+                          width: 35,
+                          height: 35,
+                          color: Colors.white,
+                          colorBlendMode: BlendMode.srcIn,
+                        ),
                       ),
                       const SizedBox(width: 8),
                       Text(
                         "DBS Application",
                         style: GoogleFonts.poppins(
+                          // Pastikan GoogleFonts diimpor jika digunakan
                           color: Colors.white,
                           fontSize: 12,
                           fontWeight: FontWeight.w500,
@@ -252,24 +231,26 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-            // Ilustrasi di sisi kanan kartu
             ShaderMask(
               shaderCallback: (Rect bounds) {
                 return const LinearGradient(
                   colors: [
-                    Color(0xFFDF98FA),
-                    Color(0xFF9055FF),
+                    Color.fromARGB(255, 144, 2, 200), // Warna atas (0%)
+                    Color.fromARGB(255, 72, 31, 147), // Warna bawah (100%)
                   ],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
+                  stops: [0.0, 1.0],
                 ).createShader(bounds);
               },
               child: SvgPicture.asset(
                 'assets/svgs/orangduduk.svg',
                 height: 100,
                 width: 60,
-                color: Colors.white,
-                colorBlendMode: BlendMode.srcIn,
+                // PENTING: Menggunakan color dan colorBlendMode agar ShaderMask efektif
+                color: Colors.white, // SVG dijadikan putih (atau warna dasar)
+                colorBlendMode:
+                    BlendMode.srcIn, // Mode ini penting untuk ShaderMask
               ),
             ),
           ],
